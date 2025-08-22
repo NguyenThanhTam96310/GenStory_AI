@@ -1,6 +1,4 @@
-package com.ebizworld.genstory.dto.reponse;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
+package com.ebizworld.genstory.dto.response;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -13,12 +11,8 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-
-public class ApiResponse<T> {
-    @Builder.Default
-    int code = 200;
-    String message;
-    T result;
+public class PermissionResponse {
+    String name;
+    String description;
 }

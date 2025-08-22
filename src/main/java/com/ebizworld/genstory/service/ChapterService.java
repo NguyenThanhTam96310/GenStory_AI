@@ -3,9 +3,10 @@ package com.ebizworld.genstory.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
-import com.ebizworld.genstory.dto.reponse.ChapterResponse;
+
 import com.ebizworld.genstory.dto.request.ChapterCreationRequest;
 import com.ebizworld.genstory.dto.request.ChapterUpdateRequest;
+import com.ebizworld.genstory.dto.response.ChapterResponse;
 import com.ebizworld.genstory.entity.Chapter;
 import com.ebizworld.genstory.exception.AppException;
 import com.ebizworld.genstory.exception.ErrorCode;

@@ -1,7 +1,4 @@
-package com.ebizworld.genstory.dto.reponse;
-
-import java.time.LocalDate;
-import java.util.List;
+package com.ebizworld.genstory.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -19,15 +16,9 @@ import lombok.experimental.FieldDefaults;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
-public class StoryResponse {
+public class ChapterResponse {
     String id;
     String title;
-    String genre;
-    int chapterLength;
-    String description;
-    String numberOfChapters;
-    int readerAge;
-    LocalDate createAt;
-
-    List<ChapterResponse> chapters;
+    int chapterNumber;
+    String content;
 }

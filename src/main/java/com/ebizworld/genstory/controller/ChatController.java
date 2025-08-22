@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.ebizworld.genstory.dto.reponse.ApiResponse;
-import com.ebizworld.genstory.dto.reponse.StoryResponse;
+import com.ebizworld.genstory.dto.response.ApiResponse;
+import com.ebizworld.genstory.dto.response.StoryResponse;
 import com.ebizworld.genstory.dto.request.ChatRequest;
 import com.ebizworld.genstory.service.ChatServive;
 

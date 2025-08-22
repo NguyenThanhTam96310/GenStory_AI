@@ -12,9 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.ebizworld.genstory.dto.reponse.StoryResponse;
 import com.ebizworld.genstory.dto.request.ChatRequest;
 import com.ebizworld.genstory.dto.request.StoryCreationRequest;
+import com.ebizworld.genstory.dto.response.StoryResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,14 +42,14 @@ public class ChatServive {
 
                 Prompt prompt = new Prompt(systemMessage, userMessage);
 
-                StoryCreationRequest storyRequest = chatClient
+                StoryCreationRequest storyrequest = chatClient
                                 .prompt(prompt)
                                 .call()
                                 .entity(new ParameterizedTypeReference<StoryCreationRequest>() {
                                 });
 
                 // Gọi hàm tạo và lưu vào DB
-                return storyService.createStory(storyRequest);
+                return storyService.createStory(storyrequest);
         }
 
         public String chatWithImage(MultipartFile file, String message) {

@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ebizworld.genstory.dto.reponse.ApiResponse;
-import com.ebizworld.genstory.dto.reponse.ChapterResponse;
+import com.ebizworld.genstory.dto.response.ApiResponse;
+import com.ebizworld.genstory.dto.response.ChapterResponse;
 import com.ebizworld.genstory.dto.request.ChapterCreationRequest;
 import com.ebizworld.genstory.dto.request.ChapterUpdateRequest;
 import com.ebizworld.genstory.service.ChapterService;

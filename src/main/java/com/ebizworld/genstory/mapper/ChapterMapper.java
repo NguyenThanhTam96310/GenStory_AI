@@ -6,9 +6,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-import com.ebizworld.genstory.dto.reponse.ChapterResponse;
 import com.ebizworld.genstory.dto.request.ChapterCreationRequest;
 import com.ebizworld.genstory.dto.request.ChapterUpdateRequest;
+import com.ebizworld.genstory.dto.response.ChapterResponse;
 import com.ebizworld.genstory.entity.Chapter;
 
 @Mapper(componentModel = "spring")

@@ -28,7 +28,7 @@ public class ChapterCreationRequest {
     String title;
 
     @Min(value = 1, message = "INVALID_CHAPTER_NUMBER")
-    @JsonProperty("chapter_number")
+    @JsonProperty("chapterNumber")
     int chapterNumber;
 
     @Lob
@@ -37,6 +37,6 @@ public class ChapterCreationRequest {
     @Size(min = 5, message = "INVALID_CHAPTER_CONTENT") // có thể bỏ nếu không cần ràng buộc min
     String content;
 
-    @JsonProperty("create_at")
+    @JsonProperty("createAt")
     LocalDate createAt;
 }

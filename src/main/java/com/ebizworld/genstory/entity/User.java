@@ -1,12 +1,14 @@
 package com.ebizworld.genstory.entity;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 import lombok.AccessLevel;
@@ -29,13 +31,13 @@ public class User {
     String id;
 
     @Column(name = "username", unique = true, columnDefinition = "VARCHAR(255) COLLATE utf8mb4_unicode_ci")
-    String userName;
+    String username;
 
-    String passWord;
+    String password;
     String firstName;
     String lastName;
     LocalDate dob;
 
-    // @ManyToMany
-    // Set<Role> roles;
+    @ManyToMany
+    Set<Role> roles;
 }

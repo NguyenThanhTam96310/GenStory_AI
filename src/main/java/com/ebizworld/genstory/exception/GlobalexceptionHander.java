@@ -3,11 +3,12 @@ package com.ebizworld.genstory.exception;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.ebizworld.genstory.dto.reponse.ApiResponse;
+import com.ebizworld.genstory.dto.response.ApiResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,6 +35,17 @@ public class GlobalexceptionHander {
         return ResponseEntity
                 .status(errorCode.getStatusCode())
                 .body(response);
+    }
+
+    @ExceptionHandler(value = AccessDeniedException.class)
+    ResponseEntity<ApiResponse> handlingAccessDeniedException(AccessDeniedException ex) {
+        ErrorCode errorCode = ErrorCode.UNAUTHORIZED;
+
+        return ResponseEntity.status(errorCode.getStatusCode())
+                .body(ApiResponse.builder()
+                        .code(errorCode.getCode())
+                        .message(errorCode.getMessage())
+                        .build());
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)

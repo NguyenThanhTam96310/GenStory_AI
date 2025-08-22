@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ebizworld.genstory.dto.reponse.ApiResponse;
-import com.ebizworld.genstory.dto.reponse.StoryResponse;
+import com.ebizworld.genstory.dto.response.ApiResponse;
+import com.ebizworld.genstory.dto.response.StoryResponse;
 import com.ebizworld.genstory.dto.request.StoryCreationRequest;
 import com.ebizworld.genstory.dto.request.StoryUpdateRequest;
 import com.ebizworld.genstory.service.StoryService;

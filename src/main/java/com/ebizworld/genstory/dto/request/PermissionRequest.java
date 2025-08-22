@@ -1,6 +1,4 @@
-package com.ebizworld.genstory.dto.reponse;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
+package com.ebizworld.genstory.dto.request;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -13,12 +11,8 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-
-public class ChapterResponse {
-    String id;
-    String title;
-    int chapterNumber;
-    String content;
+public class PermissionRequest {
+    String name;
+    String description;
 }

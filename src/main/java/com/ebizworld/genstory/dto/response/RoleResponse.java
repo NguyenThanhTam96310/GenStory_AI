@@ -1,11 +1,6 @@
-package com.ebizworld.genstory.entity;
+package com.ebizworld.genstory.dto.response;
 
 import java.util.Set;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -14,19 +9,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-@Entity
-@Table(name = "roles")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Role {
-    @Id
+public class RoleResponse {
     String name;
-
     String description;
-
-    @ManyToMany
-    Set<Permission> permissions;
+    Set<PermissionResponse> permissions;
 }
