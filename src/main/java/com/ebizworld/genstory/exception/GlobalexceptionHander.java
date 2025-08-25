@@ -1,6 +1,7 @@
 package com.ebizworld.genstory.exception;
 
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -10,13 +11,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.ebizworld.genstory.dto.response.ApiResponse;
 
+import jakarta.validation.ConstraintViolation;
 import lombok.extern.slf4j.Slf4j;
 
 @ControllerAdvice
 @Slf4j
 public class GlobalexceptionHander {
 
-    // private static final String MIN_ATTRIBUTES = "min";
+    private static final String MIN_ATTRIBUTES = "min";
 
     @ExceptionHandler(value = Exception.class)
     ResponseEntity<ApiResponse> handlingRuntimeException(RuntimeException ex) {
@@ -55,18 +57,23 @@ public class GlobalexceptionHander {
         Map<String, Object> attributes = null;
         try {
             errorCode = ErrorCode.valueOf(enumKey);
-            // var constraintViolation =
-            // ex.getBindingResult().getAllErrors().getFirst().unwrap(ConstraintViolation.class);
-            // attributes = constraintViolation.getConstraintDescriptor().getAttributes();
+            var constraintViolation = ex.getBindingResult().getAllErrors().getFirst().unwrap(ConstraintViolation.class);
+            attributes = constraintViolation.getConstraintDescriptor().getAttributes();
 
         } catch (IllegalArgumentException e) {
             // errorCode = ErrorCode.INVALID_KEY;
         }
         ApiResponse response = new ApiResponse();
         response.setCode(errorCode.getCode());
-        response.setMessage(errorCode.getMessage());
-        // Objects.nonNull(attributes) ? mapAttributes(errorCode.getMessage(),
-        // attributes):
+        response.setMessage(
+                Objects.nonNull(attributes)
+                        ? mapAttributes(errorCode.getMessage(), attributes)
+                        : errorCode.getMessage());
         return ResponseEntity.badRequest().body(response);
+    }
+
+    private String mapAttributes(String message, Map<String, Object> attributes) {
+        String minValue = String.valueOf(attributes.get(MIN_ATTRIBUTES));
+        return message.replace("{" + MIN_ATTRIBUTES + "}", minValue);
     }
 }

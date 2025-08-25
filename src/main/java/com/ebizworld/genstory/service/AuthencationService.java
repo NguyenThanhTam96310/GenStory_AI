@@ -8,17 +8,22 @@ import java.util.StringJoiner;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.ebizworld.genstory.dto.request.AuthenticationRequest;
 import com.ebizworld.genstory.dto.request.IntrospectRequest;
+import com.ebizworld.genstory.dto.request.LogoutRequest;
+import com.ebizworld.genstory.dto.request.RefreshRequest;
 import com.ebizworld.genstory.dto.response.AuthenticationResponse;
 import com.ebizworld.genstory.dto.response.IntrospectResponse;
+import com.ebizworld.genstory.entity.InvalidatedToken;
 import com.ebizworld.genstory.entity.User;
 import com.ebizworld.genstory.exception.AppException;
 import com.ebizworld.genstory.exception.ErrorCode;
+import com.ebizworld.genstory.repository.InvalidatedTokenRepository;
 import com.ebizworld.genstory.repository.UserRepository;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
@@ -39,12 +44,12 @@ import lombok.AccessLevel;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor // Tạo constructor tự động với tất cả các trường thay cho @Autowired
+@RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthencationService {
 
     UserRepository userRepository;
-    PasswordEncoder passwordEncoder;
+    InvalidatedTokenRepository invalidatedTokenRepository;
     @NonFinal
     @Value("${jwt_secret}")
     protected String SECRET_KEY;
@@ -57,14 +62,11 @@ public class AuthencationService {
     @Value("${jwt.refreshable-duration}")
     private long REFRESHABLE_DURATION;
 
-    // kiem tra xem người dùng có tồn tại trong hệ thống hay không va nếu có thì so
-    // sánh mật khẩu
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        // log.info("Authenticating user: {}", SECRET_KEY);
         var user = userRepository
                 .findByUsername(request.getUsername())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
         if (!authenticated) {
             throw new AppException(ErrorCode.INVALID_CREDENTIALS);
@@ -74,23 +76,18 @@ public class AuthencationService {
     }
 
     private String generateToken(User user) {
-        // header chứa thông tin về thuật toán mã hóa và các thông tin khác
         JWSHeader jwsHeader = new JWSHeader(JWSAlgorithm.HS512);
-
-        // payload chứa các thông tin về người dùng và thời gian hết hạn của token
         JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-                .subject(user.getUsername()) // Chủ thể của token, thường là tên người dùng hoặc ID người dùng
-                .issuer("gendtory") // Người phát hành token, có thể là tên ứng dụng hoặc dịch vụ
-                .issueTime(new Date()) // Thời gian phát hành token
+                .subject(user.getUsername())
+                .issuer("genstory")
+                .issueTime(new Date())
                 .expirationTime(new Date(
                         Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli()))
-                .jwtID(UUID.randomUUID().toString()) // UUID là 1 chuỗi gôm 32 kí tự và k trùng
-                .claim("scope", buildScope(user)) // Thêm các claim tùy chỉnh nếu cần
+                .jwtID(UUID.randomUUID().toString())
+                .claim("scope", buildScope(user))
                 .build();
         Payload payload = new Payload(claimsSet.toJSONObject());
         JWSObject jwsObject = new JWSObject(jwsHeader, payload);
-
-        // Ky kết token bằng khóa bí mật
         try {
             jwsObject.sign(new MACSigner(SECRET_KEY.getBytes()));
             return jwsObject.serialize(); // Trả về token đã ký
@@ -109,12 +106,12 @@ public class AuthencationService {
             isValid = false;
         }
         return IntrospectResponse.builder()
-                .valid(isValid) // Kiểm tra xem token có hợp lệ và chưa hết hạn
+                .valid(isValid)
                 .build();
     }
 
+    // Kiểm tra còn hiệu lực hay không
     private SignedJWT verityToken(String token, boolean isRefresh) throws JOSEException, ParseException {
-        // Kiểm tra còn hiệu lực hay không
         JWSVerifier verifier = new MACVerifier(SECRET_KEY.getBytes());
         SignedJWT signedJWT = SignedJWT.parse(token);
         Date expirationTime = (isRefresh)
@@ -128,11 +125,9 @@ public class AuthencationService {
         var verified = signedJWT.verify(verifier); // trả về true nếu token hợp lệ, false nếu không hợp lệ
         if (!(verified && expirationTime.after(new Date())))
             throw new AppException(ErrorCode.UNAUTHENTICATED);
-
-        // // kiểm tra logout chưa
-        // if
-        // (invalidatedTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID()))
-        // throw new AppException(ErrorCode.UNAUTHORIZED);
+        // kiểm tra logout chưa
+        if (invalidatedTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID()))
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
 
         return signedJWT;
     }
@@ -150,45 +145,33 @@ public class AuthencationService {
         return stringJoiner.toString();
     }
 
-    // public void logout(LogoutRequest request) throws JOSEException,
-    // ParseException {
+    public void logout(LogoutRequest request) throws JOSEException, ParseException {
+        try {
+            var signToken = verityToken(request.getToken(), true);
+            String jit = signToken.getJWTClaimsSet().getJWTID();
+            Date expiryTime = signToken.getJWTClaimsSet().getExpirationTime();
+            InvalidatedToken invalidatedToken = InvalidatedToken.builder().id(jit).expiryTime(expiryTime).build();
+            invalidatedTokenRepository.save(invalidatedToken);
+        } catch (AppException e) {
+            log.info("Token alreadly expired");
+        }
+    }
 
-    // try {
-    // var signToken = verityToken(request.getToken(), true);
-    // String jit = signToken.getJWTClaimsSet().getJWTID();
-    // Date expiryTime = signToken.getJWTClaimsSet().getExpirationTime();
-    // InvalidatedToken invalidatedToken =
-    // InvalidatedToken.builder().id(jit).expiryTime(expiryTime).build();
-    // invalidatedTokenRepository.save(invalidatedToken);
-    // } catch (AppException e) {
-    // log.info("Token alreadly expired");
-    // }
-    // }
+    public AuthenticationResponse refreshToken(RefreshRequest request) throws JOSEException, ParseException {
+        var signJWT = verityToken(request.getToken(), true);
 
-    // public AuthenticationResponse refreshToken(RefreshRequest request) throws
-    // JOSEException, ParseException {
-    // // kiểm tra xem token còn hiệu lực k
-    // var signJWT = verityToken(request.getToken(), true);
+        var jit = signJWT.getJWTClaimsSet().getJWTID();
+        var expiryTime = signJWT.getJWTClaimsSet().getExpirationTime();
 
-    // // thực hiện refresh
-    // // lấy id toke
-    // var jit = signJWT.getJWTClaimsSet().getJWTID();
-    // var expiryTime = signJWT.getJWTClaimsSet().getExpirationTime();
-    // // loguot cho token cu
-    // InvalidatedToken invalidatedToken =
-    // InvalidatedToken.builder().id(jit).expiryTime(expiryTime).build();
-    // invalidatedTokenRepository.save(invalidatedToken);
+        InvalidatedToken invalidatedToken = InvalidatedToken.builder().id(jit).expiryTime(expiryTime).build();
+        invalidatedTokenRepository.save(invalidatedToken);
 
-    // // get User
-    // var username = signJWT.getJWTClaimsSet().getSubject();
-    // var user =
-    // userRepository.findByUserName(username).orElseThrow(() -> new
-    // AppException(ErrorCode.UNAUTHENTICATED));
+        var username = signJWT.getJWTClaimsSet().getSubject();
+        var user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
 
-    // // Cấp lại token mới
-    // var token = generateToken(user);
-    // return
-    // AuthenticationResponse.builder().authenticated(true).token(token).build();
-    // }
+        var token = generateToken(user);
+        return AuthenticationResponse.builder().authenticated(true).token(token).build();
+    }
 
 }

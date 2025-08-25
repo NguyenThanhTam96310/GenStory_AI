@@ -16,27 +16,27 @@ public enum ErrorCode {
     CHAPTER_NOT_FOUND(1103, "Chapter not found", HttpStatus.NOT_FOUND),
 
     // =================STORY REQUEST VALIDATION (2000 - 2099) =================
-    INVALID_REQUEST_TITLE(2001, "Title must be at least 5 characters long", HttpStatus.BAD_REQUEST),
-    INVALID_REQUEST_GENRE(2002, "Genre must contain at least 5 characters", HttpStatus.BAD_REQUEST),
-    INVALID_REQUEST_STORY_LENGTH(2003, "Story length must be at least 1000", HttpStatus.BAD_REQUEST),
-    INVALID_REQUEST_DESCRIPTION(2004, "Description must contain at least 3 characters", HttpStatus.BAD_REQUEST),
-    INVALID_REQUEST_NUMBER_OF_CHAPTERS(2005, "Number of chapters must be at least 1", HttpStatus.BAD_REQUEST),
-    INVALID_REQUEST_READER_AGE(2006, "Reader age must be at least 3", HttpStatus.BAD_REQUEST),
-    INVALID_REQUEST_HASH_CONTENT(2007, "Hash content must have at least 3 characters", HttpStatus.BAD_REQUEST),
+    INVALID_REQUEST_TITLE(2001, "Title must be at least {min} characters long", HttpStatus.BAD_REQUEST),
+    INVALID_REQUEST_GENRE(2002, "Genre must contain at least {min} characters", HttpStatus.BAD_REQUEST),
+    INVALID_REQUEST_STORY_LENGTH(2003, "Story length must be at least {min}", HttpStatus.BAD_REQUEST),
+    INVALID_REQUEST_DESCRIPTION(2004, "Description must contain at least {min} characters", HttpStatus.BAD_REQUEST),
+    INVALID_REQUEST_NUMBER_OF_CHAPTERS(2005, "Number of chapters must be at least {min}", HttpStatus.BAD_REQUEST),
+    INVALID_REQUEST_READER_AGE(2006, "Reader age must be at least {min}", HttpStatus.BAD_REQUEST),
+    INVALID_REQUEST_HASH_CONTENT(2007, "Hash content must have at least {min} characters", HttpStatus.BAD_REQUEST),
 
     // ================= CHAPTER REQUEST VALIDATION (2100 - 2199) =================
-    INVALID_REQUEST_CHAPTER_TITLE(2008, "Chapter title must be at least 5 characters long", HttpStatus.BAD_REQUEST),
-    INVALID_REQUEST_CHAPTER_DESCRIPTION(2009, "Chapter description must be at least 10 characters long",
+    INVALID_REQUEST_CHAPTER_TITLE(2008, "Chapter title must be at least {min} characters long", HttpStatus.BAD_REQUEST),
+    INVALID_REQUEST_CHAPTER_DESCRIPTION(2009, "Chapter description must be at least {min} characters long",
             HttpStatus.BAD_REQUEST),
     INVALID_REQUEST_CHAPTER_NUMBER(2010, "Chapter number is required", HttpStatus.BAD_REQUEST),
-    INVALID_REQUEST_CONTENT(2011, "Content must be at least 1000 characters", HttpStatus.BAD_REQUEST),
+    INVALID_REQUEST_CONTENT(2011, "Content must be at least {min} characters", HttpStatus.BAD_REQUEST),
 
     // ================= USER REQUEST VALIDATION (1200 - 1299) =================
-    INVALID_DOB(2012, "Your age must be at least 18", HttpStatus.BAD_REQUEST),
-    INVALID_REQUEST_USERNAME(2013, "Username must be at least 3 characters long", HttpStatus.BAD_REQUEST),
-    INVALID_REQUEST_PASSWORD(2014, "Password must be at least 8 characters long", HttpStatus.BAD_REQUEST),
-    INVALID_REQUEST_FIRSTNAME(2015, "First name must be at least 3 characters long", HttpStatus.BAD_REQUEST),
-    INVALID_REQUEST_LASTNAME(2016, "Last name must be at least 3 characters long", HttpStatus.BAD_REQUEST),
+    INVALID_REQUEST_DOB(2012, "Your age must be at least {min}", HttpStatus.BAD_REQUEST),
+    INVALID_REQUEST_USERNAME(2013, "Username must be at least {min} characters long", HttpStatus.BAD_REQUEST),
+    INVALID_REQUEST_PASSWORD(2014, "Password must be at least {min} characters long", HttpStatus.BAD_REQUEST),
+    INVALID_REQUEST_FIRSTNAME(2015, "First name must be at least {min} characters long", HttpStatus.BAD_REQUEST),
+    INVALID_REQUEST_LASTNAME(2016, "Last name must be at least {min} characters long", HttpStatus.BAD_REQUEST),
 
     // ================= SECURITY / AUTH (3000 - 3099) =================
     UNAUTHORIZED(3001, "Unauthorized", HttpStatus.UNAUTHORIZED),

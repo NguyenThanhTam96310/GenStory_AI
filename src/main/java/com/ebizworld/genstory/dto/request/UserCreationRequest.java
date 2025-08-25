@@ -2,6 +2,7 @@ package com.ebizworld.genstory.dto.request;
 
 import java.time.LocalDate;
 
+import com.ebizworld.validator.DobConstraint;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.Size;
@@ -35,6 +36,6 @@ public class UserCreationRequest {
     @JsonProperty("lastName")
     String lastName;
 
-    // @DobConstraint(min = 16, message = "INVALID_DOB")
+    @DobConstraint(min = 13, message = "INVALID_REQUEST_DOB")
     LocalDate dob;
 }
