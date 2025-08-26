@@ -2,6 +2,7 @@ package com.ebizworld.genstory.service;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.ebizworld.genstory.dto.request.PermissionRequest;
@@ -23,17 +24,20 @@ public class PermissionService {
     PermissionRepository permissionRepository;
     PermissionMapper permissionMapper;
 
+    @PreAuthorize("hasRole('ADMIN')")
     public PermissionResponse create(PermissionRequest request) {
         Permission permission = permissionMapper.toPermission(request);
         permission = permissionRepository.save(permission);
         return permissionMapper.toPermissionResponse(permission);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public List<PermissionResponse> getAll() {
         var permissions = permissionRepository.findAll();
         return permissions.stream().map(permissionMapper::toPermissionResponse).toList();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public void delete(String name) {
         permissionRepository.deleteById(name);
     }

@@ -1,6 +1,7 @@
 package com.ebizworld.genstory.controller;
 
 import java.text.ParseException;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,8 +46,7 @@ public class AuthenticatitionController {
     }
 
     @PostMapping("/introspect")
-    ApiResponse<IntrospectResponse> login(@RequestBody IntrospectRequest request)
-            throws JOSEException, ParseException {
+    ApiResponse<IntrospectResponse> login(@RequestBody IntrospectRequest request) throws JOSEException, ParseException {
         var isAuthenticated = authenticationService.introspect(request);
         return ApiResponse.<IntrospectResponse>builder().result(isAuthenticated).build();
     }

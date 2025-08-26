@@ -1,18 +1,20 @@
 package com.ebizworld.genstory.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.LocalDate;
+import java.util.List;
+
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-
-import java.time.LocalDate;
-import java.util.List;
 
 @Data
 @NoArgsConstructor

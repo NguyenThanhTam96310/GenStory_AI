@@ -2,6 +2,8 @@ package com.ebizworld.genstory.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,17 +13,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ebizworld.genstory.dto.response.ApiResponse;
-import com.ebizworld.genstory.dto.response.StoryResponse;
 import com.ebizworld.genstory.dto.request.StoryCreationRequest;
 import com.ebizworld.genstory.dto.request.StoryUpdateRequest;
+import com.ebizworld.genstory.dto.response.ApiResponse;
+import com.ebizworld.genstory.dto.response.StoryResponse;
 import com.ebizworld.genstory.service.StoryService;
 
-import jakarta.validation.Valid;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import lombok.AccessLevel;
 
 @RestController
 @Slf4j
@@ -53,8 +54,8 @@ public class StoryController {
     }
 
     @PutMapping("/{id}")
-    ApiResponse<StoryResponse> updateStory(@PathVariable("id") String id,
-            @RequestBody @Valid StoryUpdateRequest request) {
+    ApiResponse<StoryResponse> updateStory(
+            @PathVariable("id") String id, @RequestBody @Valid StoryUpdateRequest request) {
         return ApiResponse.<StoryResponse>builder()
                 .result(storyService.updateStory(id, request))
                 .build();

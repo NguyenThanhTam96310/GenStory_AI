@@ -21,6 +21,7 @@ import com.ebizworld.genstory.exception.ErrorCode;
 import com.ebizworld.genstory.mapper.UserMapper;
 import com.ebizworld.genstory.repository.RoleRepository;
 import com.ebizworld.genstory.repository.UserRepository;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -53,8 +54,7 @@ public class UserService {
     }
 
     public UserResponse updateUser(String userId, UserUpdateRequest request) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         userMapper.updateUser(user, request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         var roles = roleRepository.findAllById(request.getRoles());
@@ -63,6 +63,7 @@ public class UserService {
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteUser(String userId) {
         userRepository.deleteById(userId);
     }
@@ -71,16 +72,13 @@ public class UserService {
     // @PreAuthorize("hasAuthority('APPROVE_DATA')") //Có quyền APPROVE_POST
     // getUsers
     public List<UserResponse> getUsers() {
-        return userRepository.findAll().stream()
-                .map(userMapper::toUserResponse)
-                .toList();
+        return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
     }
 
     @PostAuthorize("returnObject.username == authentication.name") // người dùng hiện tại mới có quyền truy cập
     public UserResponse getUser(String userId) {
         return userMapper.toUserResponse(
-                userRepository.findById(userId)
-                        .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND)));
+                userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND)));
     }
 
     public UserResponse getMyInfo() {

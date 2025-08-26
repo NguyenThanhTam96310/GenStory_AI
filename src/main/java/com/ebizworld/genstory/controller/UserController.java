@@ -1,17 +1,17 @@
 package com.ebizworld.genstory.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import com.ebizworld.genstory.dto.response.ApiResponse;
-import com.ebizworld.genstory.dto.response.UserResponse;
-import com.ebizworld.genstory.dto.request.UserCreationRequest;
-import com.ebizworld.genstory.dto.request.UserUpdateRequest;
-import com.ebizworld.genstory.service.UserService;
+import java.util.List;
 
 import jakarta.validation.Valid;
 
-import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import com.ebizworld.genstory.dto.request.UserCreationRequest;
+import com.ebizworld.genstory.dto.request.UserUpdateRequest;
+import com.ebizworld.genstory.dto.response.ApiResponse;
+import com.ebizworld.genstory.dto.response.UserResponse;
+import com.ebizworld.genstory.service.UserService;
 
 @RestController
 @RequestMapping("/users")

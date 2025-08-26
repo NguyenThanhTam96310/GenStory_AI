@@ -12,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,6 +31,7 @@ public class Story {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
+
     String title;
     String genre;
     int chapterLength;
@@ -37,9 +39,13 @@ public class Story {
     int numberOfChapters;
     int readerAge;
     String hashContent;
+
     @Column(name = "create_at", updatable = false)
     LocalDate createAt;
 
-    @OneToMany(mappedBy = "story", cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER)
+    @OneToMany(
+            mappedBy = "story",
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            fetch = FetchType.EAGER)
     List<Chapter> chapters;
 }

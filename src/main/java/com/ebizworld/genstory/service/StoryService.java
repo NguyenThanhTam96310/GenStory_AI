@@ -1,6 +1,8 @@
 package com.ebizworld.genstory.service;
 
 import java.util.List;
+
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.ebizworld.genstory.dto.request.StoryCreationRequest;
@@ -14,10 +16,10 @@ import com.ebizworld.genstory.mapper.ChapterMapper;
 import com.ebizworld.genstory.mapper.StoryMapper;
 import com.ebizworld.genstory.repository.StoryRepository;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import lombok.AccessLevel;
 
 @Service
 @Slf4j
@@ -46,21 +48,21 @@ public class StoryService {
     }
 
     public StoryResponse updateStory(String id, StoryUpdateRequest request) {
-        Story story = storyRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.STORY_NOT_FOUND));
+        Story story = storyRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.STORY_NOT_FOUND));
         storyMapper.updateStory(story, request);
         return storyMapper.toStoryResponse(storyRepository.save(story));
     }
 
     public StoryResponse getStoryById(String id) {
-        return storyMapper.toStoryResponse(storyRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.STORY_NOT_FOUND)));
+        return storyMapper.toStoryResponse(
+                storyRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.STORY_NOT_FOUND)));
     }
 
     public List<StoryResponse> getAllStory() {
         return storyMapper.toStoryResponse(storyRepository.findAll());
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteStoryById(String id) {
         storyRepository.deleteById(id);
     }

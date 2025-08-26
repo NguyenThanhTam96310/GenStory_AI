@@ -3,8 +3,6 @@ package com.ebizworld.genstory.dto.response;
 import java.time.LocalDate;
 import java.util.Set;
 
-import com.ebizworld.genstory.entity.Role;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

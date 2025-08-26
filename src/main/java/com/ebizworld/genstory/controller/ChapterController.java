@@ -2,6 +2,8 @@ package com.ebizworld.genstory.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,17 +13,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ebizworld.genstory.dto.response.ApiResponse;
-import com.ebizworld.genstory.dto.response.ChapterResponse;
 import com.ebizworld.genstory.dto.request.ChapterCreationRequest;
 import com.ebizworld.genstory.dto.request.ChapterUpdateRequest;
+import com.ebizworld.genstory.dto.response.ApiResponse;
+import com.ebizworld.genstory.dto.response.ChapterResponse;
 import com.ebizworld.genstory.service.ChapterService;
 
-import jakarta.validation.Valid;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import lombok.AccessLevel;
 
 @RestController
 @Slf4j
@@ -53,8 +54,8 @@ public class ChapterController {
     }
 
     @PutMapping("/{id}")
-    ApiResponse<ChapterResponse> updateChapter(@PathVariable("id") String id,
-            @RequestBody @Valid ChapterUpdateRequest request) {
+    ApiResponse<ChapterResponse> updateChapter(
+            @PathVariable("id") String id, @RequestBody @Valid ChapterUpdateRequest request) {
         return ApiResponse.<ChapterResponse>builder()
                 .result(chapterService.updateChapter(id, request))
                 .build();
@@ -67,5 +68,4 @@ public class ChapterController {
                 .result("Chapter with id " + id + " deleted successfully")
                 .build();
     }
-
 }

@@ -9,9 +9,9 @@ import java.lang.annotation.Target;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
-@Target({ FIELD })
+@Target({FIELD})
 @Retention(RUNTIME)
-@Constraint(validatedBy = { DobValidator.class })
+@Constraint(validatedBy = {DobValidator.class})
 public @interface DobConstraint {
     String message() default "Invalid date of birth";
 

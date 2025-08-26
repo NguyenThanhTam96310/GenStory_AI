@@ -36,11 +36,11 @@ import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
-import lombok.AccessLevel;
 
 @Service
 @Slf4j
@@ -50,6 +50,7 @@ public class AuthencationService {
 
     UserRepository userRepository;
     InvalidatedTokenRepository invalidatedTokenRepository;
+
     @NonFinal
     @Value("${jwt_secret}")
     protected String SECRET_KEY;
@@ -105,9 +106,7 @@ public class AuthencationService {
         } catch (AppException ex) {
             isValid = false;
         }
-        return IntrospectResponse.builder()
-                .valid(isValid)
-                .build();
+        return IntrospectResponse.builder().valid(isValid).build();
     }
 
     // Kiểm tra còn hiệu lực hay không
@@ -123,8 +122,7 @@ public class AuthencationService {
                         .toEpochMilli())
                 : signedJWT.getJWTClaimsSet().getExpirationTime();
         var verified = signedJWT.verify(verifier); // trả về true nếu token hợp lệ, false nếu không hợp lệ
-        if (!(verified && expirationTime.after(new Date())))
-            throw new AppException(ErrorCode.UNAUTHENTICATED);
+        if (!(verified && expirationTime.after(new Date()))) throw new AppException(ErrorCode.UNAUTHENTICATED);
         // kiểm tra logout chưa
         if (invalidatedTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID()))
             throw new AppException(ErrorCode.UNAUTHENTICATED);
@@ -150,7 +148,8 @@ public class AuthencationService {
             var signToken = verityToken(request.getToken(), true);
             String jit = signToken.getJWTClaimsSet().getJWTID();
             Date expiryTime = signToken.getJWTClaimsSet().getExpirationTime();
-            InvalidatedToken invalidatedToken = InvalidatedToken.builder().id(jit).expiryTime(expiryTime).build();
+            InvalidatedToken invalidatedToken =
+                    InvalidatedToken.builder().id(jit).expiryTime(expiryTime).build();
             invalidatedTokenRepository.save(invalidatedToken);
         } catch (AppException e) {
             log.info("Token alreadly expired");
@@ -163,15 +162,15 @@ public class AuthencationService {
         var jit = signJWT.getJWTClaimsSet().getJWTID();
         var expiryTime = signJWT.getJWTClaimsSet().getExpirationTime();
 
-        InvalidatedToken invalidatedToken = InvalidatedToken.builder().id(jit).expiryTime(expiryTime).build();
+        InvalidatedToken invalidatedToken =
+                InvalidatedToken.builder().id(jit).expiryTime(expiryTime).build();
         invalidatedTokenRepository.save(invalidatedToken);
 
         var username = signJWT.getJWTClaimsSet().getSubject();
-        var user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
+        var user =
+                userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
 
         var token = generateToken(user);
         return AuthenticationResponse.builder().authenticated(true).token(token).build();
     }
-
 }

@@ -3,10 +3,10 @@ package com.ebizworld.genstory.dto.request;
 import java.time.LocalDate;
 import java.util.List;
 
+import jakarta.validation.constraints.Size;
+
 import com.ebizworld.validator.DobConstraint;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import jakarta.validation.constraints.Size;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

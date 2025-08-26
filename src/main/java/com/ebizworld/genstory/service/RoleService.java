@@ -3,6 +3,7 @@ package com.ebizworld.genstory.service;
 import java.util.HashSet;
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.ebizworld.genstory.dto.request.RoleRequest;
@@ -25,6 +26,7 @@ public class RoleService {
     PermissionRepository permissionRepository;
     RoleMapper roleMapper;
 
+    @PreAuthorize("hasRole('ADMIN')")
     public RoleResponse create(RoleRequest request) {
         var role = roleMapper.toRole(request);
         var permission = permissionRepository.findAllById(request.getPermissions());
@@ -33,11 +35,13 @@ public class RoleService {
         return roleMapper.toRoleResponse(role);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public List<RoleResponse> getRoleAll() {
         var roles = roleRepository.findAll();
         return roles.stream().map(roleMapper::toRoleResponse).toList();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteRole(String id) {
         roleRepository.deleteById(id);
     }

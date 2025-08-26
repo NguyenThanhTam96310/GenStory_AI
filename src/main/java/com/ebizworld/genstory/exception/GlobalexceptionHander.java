@@ -3,6 +3,8 @@ package com.ebizworld.genstory.exception;
 import java.util.Map;
 import java.util.Objects;
 
+import jakarta.validation.ConstraintViolation;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -11,7 +13,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.ebizworld.genstory.dto.response.ApiResponse;
 
-import jakarta.validation.ConstraintViolation;
 import lombok.extern.slf4j.Slf4j;
 
 @ControllerAdvice
@@ -34,9 +35,7 @@ public class GlobalexceptionHander {
         ApiResponse response = new ApiResponse();
         response.setCode(errorCode.getCode());
         response.setMessage(ex.getMessage());
-        return ResponseEntity
-                .status(errorCode.getStatusCode())
-                .body(response);
+        return ResponseEntity.status(errorCode.getStatusCode()).body(response);
     }
 
     @ExceptionHandler(value = AccessDeniedException.class)
@@ -57,7 +56,8 @@ public class GlobalexceptionHander {
         Map<String, Object> attributes = null;
         try {
             errorCode = ErrorCode.valueOf(enumKey);
-            var constraintViolation = ex.getBindingResult().getAllErrors().getFirst().unwrap(ConstraintViolation.class);
+            var constraintViolation =
+                    ex.getBindingResult().getAllErrors().getFirst().unwrap(ConstraintViolation.class);
             attributes = constraintViolation.getConstraintDescriptor().getAttributes();
 
         } catch (IllegalArgumentException e) {

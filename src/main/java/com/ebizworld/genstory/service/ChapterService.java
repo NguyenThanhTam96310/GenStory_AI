@@ -13,10 +13,10 @@ import com.ebizworld.genstory.exception.ErrorCode;
 import com.ebizworld.genstory.mapper.ChapterMapper;
 import com.ebizworld.genstory.repository.ChapterRepository;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import lombok.AccessLevel;
 
 @Service
 @Slf4j
@@ -36,12 +36,11 @@ public class ChapterService {
         Chapter chapter = chapterMapper.toChapter(request);
         Chapter savChapter = chapterRepository.save(chapter);
         return chapterMapper.toChapterResponse(savChapter);
-
     }
 
     public ChapterResponse updateChapter(String id, ChapterUpdateRequest request) {
-        Chapter chapter = chapterRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.CHAPTER_NOT_FOUND));
+        Chapter chapter =
+                chapterRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.CHAPTER_NOT_FOUND));
         if (chapterRepository.existsByTitle(request.getTitle()))
             throw new AppException(ErrorCode.CHAPTER_ALREADY_EXISTS);
         if (chapterRepository.existsByChapterNumber(request.getChapterNumber()))
@@ -51,8 +50,8 @@ public class ChapterService {
     }
 
     public ChapterResponse getChapterById(String id) {
-        return chapterMapper.toChapterResponse(chapterRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.CHAPTER_NOT_FOUND)));
+        return chapterMapper.toChapterResponse(
+                chapterRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.CHAPTER_NOT_FOUND)));
     }
 
     public List<ChapterResponse> getAllChapter() {
@@ -62,5 +61,4 @@ public class ChapterService {
     public void deleteChapterById(String id) {
         chapterRepository.deleteById(id);
     }
-
 }

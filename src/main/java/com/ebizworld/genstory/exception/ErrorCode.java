@@ -1,6 +1,7 @@
 package com.ebizworld.genstory.exception;
 
 import org.springframework.http.HttpStatus;
+
 import lombok.Getter;
 
 @Getter
@@ -26,8 +27,8 @@ public enum ErrorCode {
 
     // ================= CHAPTER REQUEST VALIDATION (2100 - 2199) =================
     INVALID_REQUEST_CHAPTER_TITLE(2008, "Chapter title must be at least {min} characters long", HttpStatus.BAD_REQUEST),
-    INVALID_REQUEST_CHAPTER_DESCRIPTION(2009, "Chapter description must be at least {min} characters long",
-            HttpStatus.BAD_REQUEST),
+    INVALID_REQUEST_CHAPTER_DESCRIPTION(
+            2009, "Chapter description must be at least {min} characters long", HttpStatus.BAD_REQUEST),
     INVALID_REQUEST_CHAPTER_NUMBER(2010, "Chapter number is required", HttpStatus.BAD_REQUEST),
     INVALID_REQUEST_CONTENT(2011, "Content must be at least {min} characters", HttpStatus.BAD_REQUEST),
 

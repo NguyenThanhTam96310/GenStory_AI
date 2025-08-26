@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,8 +30,10 @@ public class Chapter {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
+
     String title;
     int chapterNumber;
+
     @Column(columnDefinition = "LONGTEXT")
     @Lob
     String content;

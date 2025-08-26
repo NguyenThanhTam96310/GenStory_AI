@@ -14,44 +14,48 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.ebizworld.genstory.constant.AppConstants;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-        private final String[] PUBLIC_ENDPOINTS = {
-                        "/users", "/auth/token", "/auth/introspect", "/auth/logout", "/auth/refresh"
-        };
-        @Autowired
-        private CustomJwtDecoder customJwtDecoder;
 
-        @Bean
-        public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-                httpSecurity.authorizeHttpRequests(
-                                requests -> requests.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-                                                .anyRequest().authenticated()); // cho phép truy cập không cần xác thực
+    @Autowired
+    private CustomJwtDecoder customJwtDecoder;
 
-                // Cấu hình OAuth2 Resource Server với JWT
-                httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer
-                                .decoder(customJwtDecoder)
-                                .jwtAuthenticationConverter(jwtAuthenticationConverter()))
-                                .authenticationEntryPoint(new JwtAuthencationEntryPoint()));
-                httpSecurity.csrf(AbstractHttpConfigurer::disable);
-                return httpSecurity.build();
-        }
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity.authorizeHttpRequests(
+                requests -> requests.requestMatchers(HttpMethod.POST, AppConstants.PUBLIC_POST_ENDPOINTS)
+                        .permitAll()
+                        .requestMatchers(HttpMethod.GET, AppConstants.PUBLIC_GET_ENDPOINTS)
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated()); // cho phép truy cập không cần xác thực
 
-        @Bean // cấu hình để ánh xạ các vai trò từ JWT đến GrantedAuthority trong Security
-        JwtAuthenticationConverter jwtAuthenticationConverter() {
-                JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-                jwtGrantedAuthoritiesConverter.setAuthorityPrefix("");
+        // Cấu hình OAuth2 Resource Server với JWT
+        httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer
+                        .decoder(customJwtDecoder)
+                        .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                .authenticationEntryPoint(new JwtAuthencationEntryPoint()));
+        httpSecurity.csrf(AbstractHttpConfigurer::disable);
+        return httpSecurity.build();
+    }
 
-                JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-                jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
+    @Bean // cấu hình để ánh xạ các vai trò từ JWT đến GrantedAuthority trong Security
+    JwtAuthenticationConverter jwtAuthenticationConverter() {
+        JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("");
 
-                return jwtAuthenticationConverter;
-        }
+        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
 
-        @Bean
-        PasswordEncoder passwordEncoder() {
-                return new BCryptPasswordEncoder(10);
-        }
+        return jwtAuthenticationConverter;
+    }
+
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(10);
+    }
 }

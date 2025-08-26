@@ -28,6 +28,7 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
+         <spotless.version>2.43.0</spotless.version> <!-- Thêm version cho Spotless -->
 	</properties>
 	<dependencies>
 		 <!-- Spring Boot Starters -->
@@ -127,7 +128,7 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
-    </plugin>
+            </plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -140,16 +141,45 @@
 					</excludes>
 				</configuration>
 			</plugin>
+            <!-- Spotless Plugin -->
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>${spotless.version}</version>
+                <configuration>
+                    <java>
+                        <removeUnusedImports/>
+                        <toggleOffOn/>
+                        <trimTrailingWhitespace/>
+                        <endWithNewline/>
+                        <indent>
+                            <tabs>true</tabs>
+                            <spacesPerTab>4</spacesPerTab>
+                        </indent>
+                        <palantirJavaFormat/>
+                        <importOrder>
+                            <order>java,jakarta,org,com,com.diffplug,</order>
+                        </importOrder>
+                    </java>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>apply</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 		</plugins>
 	</build>
-
 
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>org.springframework.ai</groupId>
                 <artifactId>spring-ai-bom</artifactId>
-                <version>1.0.0</version>
+                <version>1.0.1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
